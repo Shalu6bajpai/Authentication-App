@@ -6,7 +6,7 @@ router.get('/profile',passport.checkAuthentication,usersController.profile);
 router.get('/sign-in',usersController.signIn);
 router.post('/create',usersController.create);
 //use passport as the middleware as authenticate
-router.post('/createsession',passport.authenticate(
+router.post('/createSession',passport.authenticate(
     'local',
     {failureRedirect:'/users/sign-in'},
     ),usersController.createSession);
@@ -16,5 +16,7 @@ router.get('/sign-out',usersController.destroySession);
 
 router.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}));
 router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/users/sign-in'}),
-usersController.createSession)
+usersController.createSession);
+//forget-password
+router.get('/forget-password',usersController.forgetpassword);
 module.exports=router;
