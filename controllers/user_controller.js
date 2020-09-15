@@ -1,4 +1,13 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt');                          
+const saltRounds = 10;
+const crypto=require('crypto');    
+const Token=require('../models/token');
+const resetMailers=require('../mailers/passwordreset');  
+const loginMailer=require('../mailers/loginmail'); 
+
+
+
 
 
 
@@ -27,6 +36,7 @@ module.exports.signUp = function(req, res){
 module.exports.signIn = function(req, res){
 
     if (req.isAuthenticated()){
+       
         return res.redirect('/users/profile'); //profile is of a user and the link should have an id a?sorry 
     }
     return res.render('sign_in', {
@@ -63,8 +73,9 @@ module.exports.create = function(req, res){
 
 // sign in and create a session for the user
 module.exports.createSession = function(req, res){
-    return res.redirect('/users/profile');
     req.flash('success', 'Logged in Successfully');
+    return res.redirect('/users/profile');
+  
 
      //can you talk on the phone its very diffi?ok wait 7379213884 my no
 }
@@ -80,4 +91,83 @@ module.exports.forgetpassword=function(req,res){
     return res.render('forgetpassword',{
         title:"Auth-App| Forget-password"
     });
+}
+
+module.exports.reset=function(req,res){
+    
+    // console.log(req.body.email);
+    User.findOne({email:req.body.email},function(err,user){
+        if(err){console.log('Error in finding the user in reset password');return;}
+
+        if(user){
+
+            let new_pass=crypto.randomBytes(20).toString('hex');
+            // console.log(new_pass);
+            let updatedStatus = user;
+
+            bcrypt.hash(new_pass, saltRounds, function(err, hash) {
+                // Store hash in your password DB.
+                updatedStatus.password=hash;
+
+                User.findByIdAndUpdate(user._id, updatedStatus, function(err, updatedData){
+                if(err){ console.log(err)}
+                else { 
+                 console.log("New Password Generated!");
+                 req.flash('success','New password sent to email');
+                }
+            })
+        });
+    
+resetMailers.newReset(user,new_pass);
+
+        return res.render('passwordrecovery',{
+            title:'Auth-App | Reset password'
+        });
+}else{
+    // console.log('Invalid Email!');
+    req.flash('error','Email not registered!')
+    return res.redirect('back');
+}
+})
+}
+
+
+
+
+// when change password in profile page
+module.exports.changePwd=function(req,res)
+{
+    if(req.body.new_pass!=req.body.confirm_pass)
+    {
+        req.flash('error','Password and confirm password should match!');
+        return res.redirect('back');
+    }
+
+    // use bcrypt to compare between plaintext from input and encrypted password in DB
+    bcrypt.compare(req.body.old_pass, req.user.password, function(err, result) {
+        // result == true
+        if(!result)
+        {
+            req.flash('error','Password is wrong!');
+            return res.redirect('back');
+        }
+        else{
+            let updatedStatus = req.user;
+
+            bcrypt.hash(req.body.new_pass, saltRounds, function(err, hash) {
+                // Store hash in your password DB.
+                updatedStatus.password=hash;
+                User.findByIdAndUpdate(req.user._id, updatedStatus, function(err, updatedData){
+                    if(err){ console.log(err)}
+                     else { 
+                         console.log("Password Updated!")
+                        }
+                })
+                req.flash('success','Password changed!');
+                return res.redirect('back');
+                
+            });
+        }
+    });
+
 }

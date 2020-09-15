@@ -19,4 +19,6 @@ router.get('/auth/google/callback',passport.authenticate('google',{failureRedire
 usersController.createSession);
 //forget-password
 router.get('/forget-password',usersController.forgetpassword);
+router.post('/reset-password',usersController.reset);  
+router.post('/changePwd',usersController.changePwd);    
 module.exports=router;

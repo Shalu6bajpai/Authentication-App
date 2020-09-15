@@ -4,12 +4,14 @@ const path = require('path');
 
 let transporter = nodemailer.createTransport({
 
-    host: process.env.MAILER_HOST,
+    service:'gmail',
+    host:'smtp.gmail.com',
     port: 587,
     secure: false,
     auth: {
-        user: process.env.MAILER_EMAIL_ID,
-        pass: process.env.MAILER_PASSWORD
+        user: 'shalubajpai162@gmail.com',
+        pass:'Shalu@1998' 
+
     }
 });
 
@@ -17,8 +19,7 @@ let transporter = nodemailer.createTransport({
 let renderTemplate = (data,relativePath) => {
     let mailHTML;
     ejs.renderFile(
-        path.join(__dirname,'../views/mailers',relativePath),
-        data,
+         data,
         function(err,template){
             if(err){
                 console.log('error in rendering template');
