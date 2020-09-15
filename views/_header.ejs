@@ -1,0 +1,35 @@
+<header id="layout-header">
+    <nav>
+        <div class="mini-logo">
+            <p>
+                <a href='/'>
+                   Auth-aPP
+                </a>
+            </p>
+        </div>
+    
+        <div class="auth-links">
+            <ul>
+                <% if (locals.user){ %>
+                <li>
+                    
+                </li>
+                <li>
+                    <a href="/users/sign-out">Sign Out</a>
+                </li>
+                <% }else{ %>
+                    <li>
+                    <a href="https://github.com/Shalu6bajpai/Superhero-Hunt">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    </li>
+                
+        
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+ 
+
+
+</header>
