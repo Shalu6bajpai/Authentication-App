@@ -13,9 +13,9 @@ Passport.js has been used for authentication.
   `npm install`  
 7. To start the server, run the following command
   
-  `node index.js` or `node index.js`  
+  `nodemon index.js` or `node index.js`  
 
-8. In your browser, open <http://localhost:YOUR-PORT-NUMBER> to view the Home page.
+8. In your browser, open <http://localhost:8000> to view the Home page.
 
 # Directory Structure
 
