@@ -1,16 +1,16 @@
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const path = require('path');
-
+const {dev} = require('./environment');
 let transporter = nodemailer.createTransport({
-
+//this whole will come under smtp?i dont get you then what will i write here okk wait ; c
     service:'gmail',
     host:'smtp.gmail.com',
     port: 587,
     secure: false,
     auth: {
-        user: 'shalubajpai162@gmail.com',//will hide it in production level
-        pass:'Shalu@1998' //will hide it in production level
+        user: dev.USER_SMTP,//will hide it in production level
+        pass:dev.USER_PASS //will hide it in production level
 
     }
 });
