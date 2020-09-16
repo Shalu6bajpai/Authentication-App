@@ -68,6 +68,7 @@ module.exports.create = function(req, res){
 module.exports.createSession = function(req, res){
     req.flash('success', 'Logged in Successfully');
     return res.redirect('/users/profile');
+    
 }
 //logout rendering
 module.exports.destroySession = function(req, res){
@@ -100,7 +101,7 @@ module.exports.reset=function(req,res){
                 User.findByIdAndUpdate(user._id, updatedStatus, function(err, updatedData){
                 if(err){ console.log(err)}
                 else { 
-                 console.log("New Password Generated!");
+                console.log("New Password Generated!");
                  req.flash('success','New password sent to email');
                 }
             })
