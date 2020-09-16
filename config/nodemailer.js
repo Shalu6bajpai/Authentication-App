@@ -3,7 +3,7 @@ const ejs = require('ejs');
 const path = require('path');
 const {dev} = require('./environment');
 let transporter = nodemailer.createTransport({
-//this whole will come under smtp?i dont get you then what will i write here okk wait ; c
+
     service:'gmail',
     host:'smtp.gmail.com',
     port: 587,
