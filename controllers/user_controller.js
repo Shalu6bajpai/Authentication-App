@@ -1,20 +1,16 @@
 const User = require('../models/user');
+//Using bcrypt,salt,cryptofor password encryption
 const bcrypt = require('bcrypt');                          
 const saltRounds = 10;
 const crypto=require('crypto');    
 const Token=require('../models/token');
 const resetMailers=require('../mailers/passwordreset');  
-const loginMailer=require('../mailers/loginmail'); 
 
 
 
-
-
-
-// let's keep it same as before
+// rendering the profile page
 module.exports.profile = function(req, res){
-   
-        return res.render('profile', {
+       return res.render('profile', {
             title: "User Profile|Profile"
     })
 
@@ -24,43 +20,42 @@ module.exports.signUp = function(req, res){
     if (req.isAuthenticated()){
         return res.redirect('/users/profile');
     }
-
-
     return res.render('sign_up', {
         title: "Auth-App | Sign Up"
     })
 };
-
-
 // render the sign in page
 module.exports.signIn = function(req, res){
-
     if (req.isAuthenticated()){
        
-        return res.redirect('/users/profile'); //profile is of a user and the link should have an id a?sorry 
+        return res.redirect('/users/profile'); 
     }
     return res.render('sign_in', {
         title: "Auth-App| Sign In"
     })
 };
 
-// get the sign up data..this one
+// get the sign up data..
 module.exports.create = function(req, res){
-    
-
-    User.findOne({email: req.body.email}, function(err, user){
-        if(err){req.flash('error', err); return}
-
+         if (req.body.password != req.body.confirm_password){
+            req.flash('error', "Passwords do not match");
+            return res.redirect('back');
+        }
+        User.findOne({email: req.body.email}, function(err, user){
+            if(err){req.flash('error', err); return}
         if (!user){
-            if (req.body.password != req.body.confirm_password){
-                req.flash('error', "Passwords do not match");
-                return res.redirect('back');
-            }
+            const name=req.body.name;
+            const email=req.body.email;
+            const password=req.body.password;
+            //encryting the password
+               bcrypt.hash(password,saltRounds,function(err,hash){
+                   let c={email:email,password:hash,name:name};
+             
             User.create(req.body, function(err, user){
                 if(err){req.flash('error', err); return}
                 req.flash('success','Sign-up Successfully!');
                 return res.redirect('/users/sign-in');
-               
+            })
             })
         }else{
             req.flash('success', 'You have already signed up, login to continue!');
@@ -69,30 +64,24 @@ module.exports.create = function(req, res){
 
     });
 }
-
-
 // sign in and create a session for the user
 module.exports.createSession = function(req, res){
     req.flash('success', 'Logged in Successfully');
     return res.redirect('/users/profile');
-  
-
-     //can you talk on the phone its very diffi?ok wait 7379213884 my no
 }
-
+//logout rendering
 module.exports.destroySession = function(req, res){
     req.logout();
-    req.flash('success', 'You have logged out!');
-
-
+    req.flash('success', 'You have logged out!'); 
     return res.redirect('/');
 }
+//render the forget password page
 module.exports.forgetpassword=function(req,res){
     return res.render('forgetpassword',{
         title:"Auth-App| Forget-password"
     });
 }
-
+//resetting the password in the database
 module.exports.reset=function(req,res){
     
     // console.log(req.body.email);
@@ -100,7 +89,6 @@ module.exports.reset=function(req,res){
         if(err){console.log('Error in finding the user in reset password');return;}
 
         if(user){
-
             let new_pass=crypto.randomBytes(20).toString('hex');
             // console.log(new_pass);
             let updatedStatus = user;
@@ -130,11 +118,7 @@ resetMailers.newReset(user,new_pass);
 }
 })
 }
-
-
-
-
-// when change password in profile page
+// Changing passsword in user profile 
 module.exports.changePwd=function(req,res)
 {
     if(req.body.new_pass!=req.body.confirm_pass)

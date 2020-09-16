@@ -1,8 +1,6 @@
 const nodeMailer=require('../config/nodemailer');
-
-//this is used to send mail at every reset password action
-
-//this is another way of exporting
+//It will send to user mail account
+//Using new way of exporting
 exports.newReset=(user,password)=>{
 
     nodeMailer.transporter.sendMail({

@@ -1,3 +1,4 @@
+//Database connectivity
 const mongoose=require('mongoose');
 mongoose.connect('mongodb://localhost/Auth-App');
 const db=mongoose.connection;

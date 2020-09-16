@@ -3,7 +3,7 @@ const googleStrategy=require('passport-google-oauth').OAuth2Strategy;
 const crypto=require('crypto');
 const User=require('../models/user');
 const { access } = require('fs');
-
+//Setting my Oauth2Strategy
 passport.use(new googleStrategy({
     clientID:"647135569868-9elbq9jcu1v1jhvbp4ns86p5fohi4lj5.apps.googleusercontent.com",
     clientSecret:"zMubcw3sFKEi568KWVoqfmk9",
